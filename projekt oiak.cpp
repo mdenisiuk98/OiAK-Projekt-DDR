@@ -1,17 +1,10 @@
 // projekt oiak.cpp : Defines the entry point for the console application.
 //
-
-#include "stdafx.h"
 #include <iostream>
-#include <list>
-#include <algorithm>
-#include "Timer.h"
 #include <fstream>
 #include <chrono>
 #include <ctime>
-#include <iomanip>
-#include <cstring>
-#include <math.h>
+
 
 using namespace std;
 
@@ -25,8 +18,6 @@ void flushCache(){
 					b[j][i] = b[i][j];
 			}
 		}
-	
-		
 }
 
 int main(){
@@ -60,7 +51,7 @@ for(int i=0;i<(24*524288);i++){
 	int columnBegin,rowBegin,columnEnd,rowEnd,rowCompare,columnCompare;
 
 	outputFile.open(dir + fileSuffix, ofstream::out);
-	meanOutput.open(dir + "SREDNIE " + fileSuffix, ofstream::out);
+	meanOutput.open(dir  + fileSuffix+ "SREDNIE ", ofstream::out);
 	cout << "\nTestowanie czasow dostepu do pamieci DDR\nPodaj rzad z ktorym wykonane bedzie porownanie: ";
 	cin >> rowCompare;
 
@@ -143,9 +134,9 @@ for(int i=0;i<(24*524288);i++){
 							"sub %%r15,%%rdx\n"
 							"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
 							: "=a" (measurement)				//wynik zwracany poprzez %rax
-							: "r" (drugi),
+							: "r" (drugi),						//argumenty wejsciowe bloku kodu asm
 							"r" (pierwszy)
-							:"r12",
+							:"r12",								//clobberowanie rejestrow i pamieci
 							"r13",
 							"r14",
 							"r15",
@@ -169,7 +160,7 @@ for(int i=0;i<(24*524288);i++){
 							"or %%rax,%%rdx\n"
 							"sub %%r15,%%rdx\n"
 							"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
-							: "=a" (measurement)				//wynik zwracany poprzez %rax
+							: "=a" (measurement)				
 							: "r" (drugi),
 							"r" (pierwszy)
 							:"r12",
@@ -221,6 +212,8 @@ for(int i=0;i<(24*524288);i++){
 						}
 					}
 				}
+
+// wypisanie wynikow na wyjsciu standardowym i do plikow wyjsciowych
 
 				for (int i=0;i<testNum;i++){
 
