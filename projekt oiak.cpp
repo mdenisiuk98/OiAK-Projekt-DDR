@@ -119,24 +119,24 @@ for(int i=0;i<(24*524288);i++){
 			if (choice==2){
 				asm volatile(
 				
-					"mov %%rax,%%r12\n"			//wskaznik na drugi element	
-					"mov %%rdx,%%r13\n"			//wskaznik na pierwszy element	
-					"mov 0(%%r13),%%r14\n"		// dostep do pierwszej wartosci przed mierzona sekwencja
+					"mov %%rax,%%r12\n"		//wskaznik na drugi element	
+					"mov %%rdx,%%r13\n"		//wskaznik na pierwszy element	
+					"mov 0(%%r13),%%r14\n"	// dostep do pierwszej wartosci przed mierzona sekwencja
 					"rdtscp\n"
-					"mov %%rax, %%r14\n"				// przechowanie wynikow rdtsc
+					"mov %%rax, %%r14\n"	// przechowanie wynikow rdtsc
 					"mov %%rdx, %%r15\n"
-					"movq    0(%%r12),%%rax\n"			//operacja odczytu jednego adresu	
-					"rdtscp\n"							//koniec pomiaru
-					"shl $32,%%r15\n"					//składanie wyników i wyliczenie rónicy
+					"movq    0(%%r12),%%rax\n"	//operacja odczytu jednego adresu	
+					"rdtscp\n"				//koniec pomiaru
+					"shl $32,%%r15\n"		//składanie wyników i wyliczenie rónicy
 					"or %%r14,%%r15\n"
 					"shl $32,%%rdx\n"
 					"or %%rax,%%rdx\n"
 					"sub %%r15,%%rdx\n"
-					"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
-					: "=a" (measurement)				//wynik zwracany poprzez %rax
-					: "r" (drugi),						//argumenty wejsciowe bloku kodu asm
+					"mov %%rdx,%%rax\n"		//przekazanie wyników pomiaru do %rax
+					: "=a" (measurement)	//wynik zwracany poprzez %rax
+					: "r" (drugi),			//argumenty wejsciowe bloku kodu asm
 					"r" (pierwszy)
-					:"r12",								//clobberowanie rejestrow i pamieci
+					:"r12",					//clobberowanie rejestrow i pamieci
 					"r13",
 					"r14",
 					"r15",
@@ -146,20 +146,20 @@ for(int i=0;i<(24*524288);i++){
 			if (choice==1){
 				asm volatile(
 				
-					"mov %%rax,%%r12\n"			//wskaznik na drugi element	
-					"mov %%rdx,%%r13\n"			//wskaznik na pierwszy element	
+					"mov %%rax,%%r12\n"		//wskaznik na drugi element	
+					"mov %%rdx,%%r13\n"		//wskaznik na pierwszy element	
 					"rdtscp\n"
-					"mov %%rax, %%r14\n"				// przechowanie wynikow rdtsc
+					"mov %%rax, %%r14\n"	// przechowanie wynikow rdtsc
 					"mov %%rdx, %%r15\n"
 					"movq 0(%%r12),%%rdx\n"
-					"movq 0(%%r13),%%rax\n"			//mierzymy odczyty obu adresów
-					"rdtscp\n"							//koniec pomiaru
-					"shl $32,%%r15\n"					//składanie wyników i wyliczenie rónicy
+					"movq 0(%%r13),%%rax\n"		//mierzymy odczyty obu adresów
+					"rdtscp\n"				//koniec pomiaru
+					"shl $32,%%r15\n"		//składanie wyników i wyliczenie rónicy
 					"or %%r14,%%r15\n"
 					"shl $32,%%rdx\n"
 					"or %%rax,%%rdx\n"
 					"sub %%r15,%%rdx\n"
-					"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
+					"mov %%rdx,%%rax\n"		//przekazanie wyników pomiaru do %rax
 					: "=a" (measurement)				
 					: "r" (drugi),
 					"r" (pierwszy)
