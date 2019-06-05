@@ -22,3 +22,5 @@ Następnie wczytywane są w postaci indeksu wiersza i kolumny tablicy dwuwymiaro
 - koniec zakresu testowanych drugich elementów pary
 
 Ostatecznie należy podać krok z jakim wykonane będą pomiary i ilość testów w serii pomiarów dla jednej pary.
+
+Wyniki zostają wygenerowane w postaci dwóch plików tekstowych: "results /data/" oraz "results ŚREDNIE /data/".
