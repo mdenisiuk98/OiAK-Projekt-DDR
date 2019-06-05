@@ -96,150 +96,150 @@ for(int i=0;i<(24*524288);i++){
 	long long *drugi=&t[rowBegin][columnBegin]+a;
 	long long baseOffset = drugi-pierwszy;
 		
-		while(drugi<=end){
-				
-				outputFile << "--- Test z pary " << pierwszy << " ([" << (pierwszy-&t[0][0])/16 << "][" <<(pierwszy-&t[0][0])%16 << "]) - " << drugi << " ([" << (drugi-&t[0][0])/16 << "][" <<(drugi-&t[0][0])%16 << "]) - przesuniecie " << drugi-pierwszy-baseOffset << " + bazowe " << baseOffset << endl;
-				cout <<  "--- Test z pary " << pierwszy << " ([" << (pierwszy-&t[0][0])/16 << "][" <<(pierwszy-&t[0][0])%16 << "]) - " << drugi << " ([" << (drugi-&t[0][0])/16 << "][" <<(drugi-&t[0][0])%16 << "]) - przesuniecie " << drugi-pierwszy -baseOffset << " + bazowe " << baseOffset << endl;
-					
-					// przygotowanie pomiaru odczytu ///////////////////////
-
-				timeMean=0;
-				min = 0;
-				max = 0;
-				outputFile << "ODCZYT\n\n";
-				cout << "\n--- ODCZYT ---\n";
-				for (int i=0;i<testNum;i++){
-					measurement=0;
-					times[i]=0;
-					flushCache();
-				// ponowny dostep do wskaznikow //////////////////////////
-					pierwszy=pierwszy;
-					drugi=drugi;
-				// testowana sekwencja ///////////////////////////////////////////////
-					if (choice==2){
-						asm volatile(
-						
-							"mov %%rax,%%r12\n"			//wskaznik na drugi element	
-							"mov %%rdx,%%r13\n"			//wskaznik na pierwszy element	
-							"mov 0(%%r13),%%r14\n"		// dostep do pierwszej wartosci przed mierzona sekwencja
-							"rdtscp\n"
-							"mov %%rax, %%r14\n"				// przechowanie wynikow rdtsc
-							"mov %%rdx, %%r15\n"
-							"movq    0(%%r12),%%rax\n"			//operacja odczytu jednego adresu	
-							"rdtscp\n"							//koniec pomiaru
-							"shl $32,%%r15\n"					//składanie wyników i wyliczenie rónicy
-							"or %%r14,%%r15\n"
-							"shl $32,%%rdx\n"
-							"or %%rax,%%rdx\n"
-							"sub %%r15,%%rdx\n"
-							"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
-							: "=a" (measurement)				//wynik zwracany poprzez %rax
-							: "r" (drugi),						//argumenty wejsciowe bloku kodu asm
-							"r" (pierwszy)
-							:"r12",								//clobberowanie rejestrow i pamieci
-							"r13",
-							"r14",
-							"r15",
-							"memory"
-						);
-					}	
-					if (choice==1){
-						asm volatile(
-						
-							"mov %%rax,%%r12\n"			//wskaznik na drugi element	
-							"mov %%rdx,%%r13\n"			//wskaznik na pierwszy element	
-							"rdtscp\n"
-							"mov %%rax, %%r14\n"				// przechowanie wynikow rdtsc
-							"mov %%rdx, %%r15\n"
-							"movq 0(%%r12),%%rdx\n"
-							"movq 0(%%r13),%%rax\n"			//mierzymy odczyty obu adresów
-							"rdtscp\n"							//koniec pomiaru
-							"shl $32,%%r15\n"					//składanie wyników i wyliczenie rónicy
-							"or %%r14,%%r15\n"
-							"shl $32,%%rdx\n"
-							"or %%rax,%%rdx\n"
-							"sub %%r15,%%rdx\n"
-							"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
-							: "=a" (measurement)				
-							: "r" (drugi),
-							"r" (pierwszy)
-							:"r12",
-							"r13",
-							"r14",
-							"r15",
-							"memory"
-						);
-					}	
-				// zapisanie wyniku pomiaru czasu /////////////////////////////////////
+	while(drugi<=end){
 			
-				times[i]=measurement;
-				}
+		outputFile << "--- Test z pary " << pierwszy << " ([" << (pierwszy-&t[0][0])/16 << "][" <<(pierwszy-&t[0][0])%16 << "]) - " << drugi << " ([" << (drugi-&t[0][0])/16 << "][" <<(drugi-&t[0][0])%16 << "]) - przesuniecie " << drugi-pierwszy-baseOffset << " + bazowe " << baseOffset << endl;
+		cout <<  "--- Test z pary " << pierwszy << " ([" << (pierwszy-&t[0][0])/16 << "][" <<(pierwszy-&t[0][0])%16 << "]) - " << drugi << " ([" << (drugi-&t[0][0])/16 << "][" <<(drugi-&t[0][0])%16 << "]) - przesuniecie " << drugi-pierwszy -baseOffset << " + bazowe " << baseOffset << endl;
 			
+			// przygotowanie pomiaru odczytu ///////////////////////
 
-				timeMean=0;
-				max = times[0];
-				min = times [0];
-				blad=0;
+		timeMean=0;
+		min = 0;
+		max = 0;
+		outputFile << "ODCZYT\n\n";
+		cout << "\n--- ODCZYT ---\n";
+		for (int i=0;i<testNum;i++){
+			measurement=0;
+			times[i]=0;
+			flushCache();
+		// ponowny dostep do wskaznikow //////////////////////////
+			pierwszy=pierwszy;
+			drugi=drugi;
+		// testowana sekwencja ///////////////////////////////////////////////
+			if (choice==2){
+				asm volatile(
 				
-				// wyliczenie średniej i wykrycie błędów grubych
-				for (int i=0;i<testNum;i++)
-				{
-					results[i]=times[i];
-					if (times[i]>max){
-						max=times[i];
-					}
-					if (times[i]<min){
-						min=times[i];
-					}
-					timeMean+=times[i];
+					"mov %%rax,%%r12\n"			//wskaznik na drugi element	
+					"mov %%rdx,%%r13\n"			//wskaznik na pierwszy element	
+					"mov 0(%%r13),%%r14\n"		// dostep do pierwszej wartosci przed mierzona sekwencja
+					"rdtscp\n"
+					"mov %%rax, %%r14\n"				// przechowanie wynikow rdtsc
+					"mov %%rdx, %%r15\n"
+					"movq    0(%%r12),%%rax\n"			//operacja odczytu jednego adresu	
+					"rdtscp\n"							//koniec pomiaru
+					"shl $32,%%r15\n"					//składanie wyników i wyliczenie rónicy
+					"or %%r14,%%r15\n"
+					"shl $32,%%rdx\n"
+					"or %%rax,%%rdx\n"
+					"sub %%r15,%%rdx\n"
+					"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
+					: "=a" (measurement)				//wynik zwracany poprzez %rax
+					: "r" (drugi),						//argumenty wejsciowe bloku kodu asm
+					"r" (pierwszy)
+					:"r12",								//clobberowanie rejestrow i pamieci
+					"r13",
+					"r14",
+					"r15",
+					"memory"
+				);
+			}	
+			if (choice==1){
+				asm volatile(
+				
+					"mov %%rax,%%r12\n"			//wskaznik na drugi element	
+					"mov %%rdx,%%r13\n"			//wskaznik na pierwszy element	
+					"rdtscp\n"
+					"mov %%rax, %%r14\n"				// przechowanie wynikow rdtsc
+					"mov %%rdx, %%r15\n"
+					"movq 0(%%r12),%%rdx\n"
+					"movq 0(%%r13),%%rax\n"			//mierzymy odczyty obu adresów
+					"rdtscp\n"							//koniec pomiaru
+					"shl $32,%%r15\n"					//składanie wyników i wyliczenie rónicy
+					"or %%r14,%%r15\n"
+					"shl $32,%%rdx\n"
+					"or %%rax,%%rdx\n"
+					"sub %%r15,%%rdx\n"
+					"mov %%rdx,%%rax\n"					//przekazanie wyników pomiaru do %rax
+					: "=a" (measurement)				
+					: "r" (drugi),
+					"r" (pierwszy)
+					:"r12",
+					"r13",
+					"r14",
+					"r15",
+					"memory"
+				);
+			}	
+		// zapisanie wyniku pomiaru czasu /////////////////////////////////////
+	
+		times[i]=measurement;
+		}
+	
+
+		timeMean=0;
+		max = times[0];
+		min = times [0];
+		blad=0;
+		
+		// wyliczenie średniej i wykrycie błędów grubych
+		for (int i=0;i<testNum;i++)
+		{
+			results[i]=times[i];
+			if (times[i]>max){
+				max=times[i];
+			}
+			if (times[i]<min){
+				min=times[i];
+			}
+			timeMean+=times[i];
+		}
+		timeMean=timeMean/testNum;
+		for (int i=0;i<testNum;i++)
+		{
+			if (times[i]>1.6*timeMean){
+				timeMean=timeMean*(testNum-blad);
+				timeMean-=times[i];
+				blad++;
+				timeMean=timeMean/(testNum-blad);
+				times[i]=0;
+			}
+		}
+		if (blad>0){
+			max=0;
+			for (int i=0;i<testNum;i++){
+				if(times[i]>max){
+					max=times[i];
 				}
-				timeMean=timeMean/testNum;
-				for (int i=0;i<testNum;i++)
-				{
-					if (times[i]>1.6*timeMean){
-						timeMean=timeMean*(testNum-blad);
-						timeMean-=times[i];
-						blad++;
-						timeMean=timeMean/(testNum-blad);
-						times[i]=0;
-					}
-				}
-				if (blad>0){
-					max=0;
-					for (int i=0;i<testNum;i++){
-						if(times[i]>max){
-							max=times[i];
-						}
-					}
-				}
+			}
+		}
 
 // wypisanie wynikow na wyjsciu standardowym i do plikow wyjsciowych
 
-				for (int i=0;i<testNum;i++){
+		for (int i=0;i<testNum;i++){
 
-					cout << results[i] << " CK";
-					outputFile << "["<< i << "] " << results[i];
+			cout << results[i] << " CK";
+			outputFile << "["<< i << "] " << results[i];
 
-					if(times[i]==0){
-						cout << ", mozliwy blad gruby!";
-						outputFile << " - mozliwy blad gruby!";
-					}
-					cout << endl;
-					outputFile << endl;
-				}
-
-				cout << "\nCzas sredni: " << timeMean << " CK, najwyzszy czas: " << max << " CK, najnizszy czas: " << min << " CK\n\n";
-				outputFile << "\nCzas sredni: " << timeMean << " CK, najwyzszy czas: " << max << " CK, najnizszy czas: " << min << " CK\n\n";
-			
-				cout << endl <<endl;
-				meanOutput << drugi-pierwszy << "\t" << timeMean << "\t" << min << endl;
-
-				drugi+=krok;
-				}
+			if(times[i]==0){
+				cout << ", mozliwy blad gruby!";
+				outputFile << " - mozliwy blad gruby!";
+			}
+			cout << endl;
+			outputFile << endl;
 		}
+
+		cout << "\nCzas sredni: " << timeMean << " CK, najwyzszy czas: " << max << " CK, najnizszy czas: " << min << " CK\n\n";
+		outputFile << "\nCzas sredni: " << timeMean << " CK, najwyzszy czas: " << max << " CK, najnizszy czas: " << min << " CK\n\n";
 	
-	cout << "Wcisnij dowolny klawisz aby opuscic program.";
-	cin.ignore();
-	cin.get();
-    return 0;
+		cout << endl <<endl;
+		meanOutput << drugi-pierwszy << "\t" << timeMean << "\t" << min << endl;
+
+		drugi+=krok;
+		}
+	}
+
+cout << "Wcisnij dowolny klawisz aby opuscic program.";
+cin.ignore();
+cin.get();
+return 0;
 }
