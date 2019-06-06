@@ -112,9 +112,6 @@ for(int i=0;i<(24*524288);i++){
 			measurement=0;
 			times[i]=0;
 			flushCache();
-		// ponowny dostep do wskaznikow //////////////////////////
-			pierwszy=pierwszy;
-			drugi=drugi;
 		// testowana sekwencja ///////////////////////////////////////////////
 			if (choice==2){
 				asm volatile(
